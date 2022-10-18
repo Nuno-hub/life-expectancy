@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument("region", help="Choose the region in ISO format (default='PT')", type=str)
+PARSER.add_argument("region", help="Choose the region in ISO format (default='PT'):", type=str)
 
 
 def load_datafile() -> pd.DataFrame:
