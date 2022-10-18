@@ -11,21 +11,22 @@ from pathlib import Path
 
 
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument("region", help="Choose the region in ISO format (default='PT')", type = str)
+PARSER.add_argument("region", help="Choose the region in ISO format (default='PT')", type=str)
 
 
 def load_datafile() -> pd.DataFrame:
     filepath = Path.cwd() / 'life_expectancy' / 'data' / 'eu_life_expectancy_raw.tsv'
     return pd.read_csv(filepath, sep='\t')
 
+
 def rearrange_columns(df_life_expectancy: pd.DataFrame) -> None:
     # Remove "time" from column name
-    df_life_expectancy.rename(columns = {'unit,sex,age,geo\\time': 'unit,sex,age,geo'},
-                              inplace = True)
+    df_life_expectancy.rename(columns={'unit,sex,age,geo\\time': 'unit,sex,age,geo'},
+                              inplace=True)
 
     # Split aggregated column in 4 columns
-    df_life_expectancy[['unit','sex','age','region']] = \
-        df_life_expectancy['unit,sex,age,geo'].str.split(',', expand = True)
+    df_life_expectancy[['unit', 'sex', 'age', 'region']] = \
+        df_life_expectancy['unit,sex,age,geo'].str.split(',', expand=True)
 
     # Remove  aggregated column
     del df_life_expectancy['unit,sex,age,geo']
@@ -35,33 +36,41 @@ def rearrange_columns(df_life_expectancy: pd.DataFrame) -> None:
     cols = cols[-4:] + cols[:-4]
     df_life_expectancy = df_life_expectancy[cols]
 
+    
 def unpivot_date(df_life_expectancy: pd.DataFrame) -> pd.DataFrame:
     return df_life_expectancy.melt(id_vars=['unit', 'sex', 'age', 'region'],
                                    var_name='year', value_name='value')
+
 
 def filter_time_empty_values(df_unpivoted: pd.DataFrame) -> pd.DataFrame:
     """ Remove rows with value=':' """
     return df_unpivoted[df_unpivoted.value.str.strip() != ':']
 
+
 def change_year_dtype_to_int(df_unpivoted: pd.DataFrame) -> None:
     df_unpivoted['year'] = df_unpivoted['year'].astype(int)
 
+    
 def remove_letters_from_value_column(df_unpivoted: pd.DataFrame) -> None:
     df_unpivoted['value'] = df_unpivoted.value.str.replace(r'[a-zA-Z]+', '', regex=True)
 
+    
 def change_value_dtype_to_float(df_unpivoted: pd.DataFrame) -> None:
     df_unpivoted['value'] = df_unpivoted['value'].astype(float)
 
+    
 def filter_region(df_unpivoted: pd.DataFrame, region: str) -> pd.DataFrame:
     return df_unpivoted[df_unpivoted.region == region]
+
 
 def save_dataframe_as_csv(df_unpivoted: pd.DataFrame, region: str) -> None:
     """ Set the prefix of filename with region and saves the dataframe as CVS"""
     filename = region.lower() + '_life_expectancy.csv'
-    filepath = Path.cwd() / 'life_expectancy' / 'data' / filename 
-    df_unpivoted.to_csv(filepath, index = False)
+    filepath = Path.cwd() / 'life_expectancy' / 'data' / filename
+    df_unpivoted.to_csv(filepath, index=False)
 
-def clean_data(region = 'PT') -> None:
+    
+def clean_data(region='PT') -> None:
     """Cleaning of life expectancy file"""
 
     df_life_expectancy = load_datafile()
@@ -82,6 +91,7 @@ def clean_data(region = 'PT') -> None:
 
     save_dataframe_as_csv(df_unpivoted, region)
 
+    
 if __name__ == "__main__":  # pragma: no cover
     REGION = PARSER.parse_args()
 
