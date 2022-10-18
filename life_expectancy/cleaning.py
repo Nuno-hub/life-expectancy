@@ -36,7 +36,7 @@ def rearrange_columns(df_life_expectancy: pd.DataFrame) -> None:
     cols = cols[-4:] + cols[:-4]
     df_life_expectancy = df_life_expectancy[cols]
 
-    
+
 def unpivot_date(df_life_expectancy: pd.DataFrame) -> pd.DataFrame:
     return df_life_expectancy.melt(id_vars=['unit', 'sex', 'age', 'region'],
                                    var_name='year', value_name='value')
@@ -50,15 +50,15 @@ def filter_time_empty_values(df_unpivoted: pd.DataFrame) -> pd.DataFrame:
 def change_year_dtype_to_int(df_unpivoted: pd.DataFrame) -> None:
     df_unpivoted['year'] = df_unpivoted['year'].astype(int)
 
-    
+
 def remove_letters_from_value_column(df_unpivoted: pd.DataFrame) -> None:
     df_unpivoted['value'] = df_unpivoted.value.str.replace(r'[a-zA-Z]+', '', regex=True)
 
-    
+
 def change_value_dtype_to_float(df_unpivoted: pd.DataFrame) -> None:
     df_unpivoted['value'] = df_unpivoted['value'].astype(float)
 
-    
+
 def filter_region(df_unpivoted: pd.DataFrame, region: str) -> pd.DataFrame:
     return df_unpivoted[df_unpivoted.region == region]
 
@@ -69,7 +69,7 @@ def save_dataframe_as_csv(df_unpivoted: pd.DataFrame, region: str) -> None:
     filepath = Path.cwd() / 'life_expectancy' / 'data' / filename
     df_unpivoted.to_csv(filepath, index=False)
 
-    
+
 def clean_data(region='PT') -> None:
     """Cleaning of life expectancy file"""
 
@@ -91,7 +91,7 @@ def clean_data(region='PT') -> None:
 
     save_dataframe_as_csv(df_unpivoted, region)
 
-    
+
 if __name__ == "__main__":  # pragma: no cover
     REGION = PARSER.parse_args()
 
