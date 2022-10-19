@@ -99,9 +99,9 @@ def save_data(df_unpivoted: pd.DataFrame, region='PT') -> None:
 def main(region='PT') -> None:
     df_life_expectancy = load_data()
     
-    df_unpivoted = clean_data(df_life_expectancy, REGION.region)
+    df_unpivoted = clean_data(df_life_expectancy, region)
 
-    save_data(df_unpivoted, REGION.region)
+    save_data(df_unpivoted, region)
 
 
 if __name__ == "__main__":  # pragma: no cover
