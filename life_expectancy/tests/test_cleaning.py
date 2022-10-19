@@ -2,7 +2,8 @@
 import pandas as pd
 import pytest
 
-from life_expectancy.cleaning import clean_data
+#from life_expectancy.cleaning import clean_data
+from life_expectancy.cleaning import main
 from . import OUTPUT_DIR
 
 
@@ -14,7 +15,8 @@ def region(request):
 def test_clean_data(pt_life_expectancy_expected, region):
     """Run the `clean_data` function and compare the output to the expected output"""
 
-    clean_data(region)
+    #clean_data(region)
+    main(region)
     pt_life_expectancy_actual = pd.read_csv(
         OUTPUT_DIR / "pt_life_expectancy.csv"
     )

@@ -70,11 +70,11 @@ def save_dataframe_as_csv(df_unpivoted: pd.DataFrame, region: str) -> None:
     df_unpivoted.to_csv(filepath, index=False)
 
 
-def clean_data(region='PT') -> None:
-    """Cleaning of life expectancy file"""
+def load_data() -> pd.DataFrame:
+    return load_datafile()
 
-    df_life_expectancy = load_datafile()
 
+def clean_data(df_life_expectancy: pd.DataFrame, region='PT') -> pd.DataFrame:
     rearrange_columns(df_life_expectancy)
 
     df_unpivoted = unpivot_date(df_life_expectancy)
@@ -89,10 +89,22 @@ def clean_data(region='PT') -> None:
 
     df_unpivoted = filter_region(df_unpivoted, region)
 
+    return df_unpivoted
+
+
+def save_data(df_unpivoted: pd.DataFrame, region='PT') -> None:
     save_dataframe_as_csv(df_unpivoted, region)
+
+
+def main(region='PT') -> None:
+    df_life_expectancy = load_data()
+    
+    df_unpivoted = clean_data(df_life_expectancy, REGION.region)
+
+    save_data(df_unpivoted, REGION.region)
 
 
 if __name__ == "__main__":  # pragma: no cover
     REGION = PARSER.parse_args()
 
-    clean_data(REGION.region)
+    main(REGION.region)
